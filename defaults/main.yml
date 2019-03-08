@@ -1,2 +1,7 @@
 ---
 # Role default lower priority variables
+
+# Default control flag ro determine access granted to group wheel to su command.
+# Due to security requisites must be one of required or sufficient
+
+su_pamd_wheel_control_flag: required

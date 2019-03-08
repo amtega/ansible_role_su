@@ -1,2 +1,6 @@
 ---
 # Tasks for testing role
+- name: change su pamd file
+  hosts: localhost
+  roles:
+    - role: amtega.su
