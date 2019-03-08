@@ -1,6 +1,43 @@
 ---
 # Tasks for testing role
-- name: change su pamd file
+- name: run idempotence test
   hosts: localhost
   roles:
-    - role: amtega.su
+    - role: amtega.docker_presets
+      docker_presets_images_json_query: >-
+        [? starts_with(name, `centos-6`)
+           || starts_with(name, `centos-7`)
+           || starts_with(name, `debian-9`)
+           || starts_with(name, `fedora-27`)
+           || starts_with(name, `fedora-28`) ]
+
+    - role: amtega.docker_sandbox
+      docker_sandbox_state: started
+  tags:
+    - sandbox
+
+- name: test su role with defaults
+  hosts: docker_sandbox_containers
+  vars:
+  roles:
+    - amtega.su
+  tasks:
+    - name: read /etc/pam.d/su file
+      command: cat /etc/pam.d/su
+      changed_when: false
+      register: read_hosts_result
+    - name: check that /etc/pam.d/su contains required line
+      assert:
+        that:
+          - read_hosts_result.stdout is regex_search("^(auth[\s\t]*{{ su_pamd_wheel_control_flag }}[\s\t]*pam_wheel.*)")
+  tags:
+    - idempotence
+
+- name: cleanup docker docker sandbox
+  hosts: localhost
+  roles:
+    - role: amtega.docker_sandbox
+      docker_sandbox_state: absent
+  tags:
+    - cleanup
+    - sandbox
