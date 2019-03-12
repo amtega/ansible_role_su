@@ -1,2 +1,15 @@
 ---
 # Role tasks
+- block:
+    - name: Ensure control flag content a valid value
+      assert:
+        that: su_pamd_wheel_control_flag in ["required","sufficient"]
+        fail_msg: "Control flag must be one of required or sufficient"
+
+    - name: Uncomment /etc/pamd/su line to adjust group wheel requisite for su command
+      replace:
+        path: "{{ su_pamd_config_file }}"
+        regexp: '^#(auth[\s\t]*{{ su_pamd_wheel_control_flag }}[\s\t]*pam_wheel.*)'
+        replace: '\1'
+  tags:
+    - role::su

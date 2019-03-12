@@ -1,2 +1,3 @@
 ---
 # Role variables
+su_pamd_config_file: /etc/pam.d/su
