@@ -1,6 +1,7 @@
 ---
 # Tasks for testing role
-- name: run idempotence test
+
+- name: Run idempotence test
   hosts: localhost
   roles:
     - role: amtega.docker_presets
@@ -15,26 +16,28 @@
   tags:
     - sandbox
 
-- name: test su role with defaults
+- name: Test su role with defaults
   hosts: docker_sandbox_containers
   vars:
   roles:
     - amtega.su
   tasks:
-    - name: Ensure /etc/pam.d/su contains change line
-      lineinfile:
-        path: /etc/pam.d/su
-        regexp: '^auth.*{{ su_pamd_wheel_control_flag }}.*pam_wheel.*'
-        state: absent
-      check_mode: yes
-      register: out
-      changed_when: not out.found
-      failed_when: not out.found
+    - name: Read /etc/pam.d/su file
+      command: cat /etc/pam.d/su
+      changed_when: no
+      register: read_pamd_su_result
 
+    - name: Check that PAM wheel group control flag is configured
+      assert:
+        that: >-
+          read_pamd_su_result.stdout_lines
+          | select("search", "^auth.*{{ su_pamd_wheel }}.*pam_wheel.*")
+          | list
+          | length > 0
   tags:
     - idempotence
 
-- name: cleanup docker docker sandbox
+- name: Cleanup docker docker sandbox
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox

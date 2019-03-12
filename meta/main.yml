@@ -1,7 +1,10 @@
+---
+# Role dependencies
+
 galaxy_info:
   role_name: su
   author: José Enrique Mourón Regueira
-  description: Edit pamd su file to configure control for group wheel acces
+  description: Configure su command
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
   min_ansible_version: 2.7
@@ -16,10 +19,13 @@ galaxy_info:
         - 28
   galaxy_tags:
     - su
+    - system
+    - security
 
 dependencies:
   - role: amtega.check_platform
-    check_platform_distributions:
-      centos: 6
-      fedora: 27
-      rhel: 6
+    vars:
+      check_platform_distributions:
+        centos: 6
+        fedora: 27
+        rhel: 6
