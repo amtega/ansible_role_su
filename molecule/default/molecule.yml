@@ -81,8 +81,7 @@ provisioner:
     hosts:
       molecule_hosts:
         vars:
-          session_timeout_time: 6000
-          session_timeout_script_path: "/etc/profile.d/session_timeout.sh"
+          su_pamd_wheel: required
       molecule_hosts_fedora:
         vars:
           ansible_python_interpreter: /usr/bin/python3
