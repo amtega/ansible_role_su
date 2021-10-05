@@ -1,0 +1,18 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Read /etc/pam.d/su file
+      command: cat /etc/pam.d/su
+      changed_when: no
+      register: read_pamd_su_result
+
+    - name: Check that PAM wheel group control flag is configured
+      assert:
+        that: >-
+          read_pamd_su_result.stdout_lines
+          | select("search", "^auth.*{{ su_pamd_wheel }}.*pam_wheel.*")
+          | list
+          | length > 0
