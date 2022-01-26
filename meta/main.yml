@@ -17,8 +17,8 @@ galaxy_info:
         - 8
     - name: Fedora
       versions:
-        - 33
         - 34
+        - 35
   galaxy_tags:
     - su
     - system
@@ -31,3 +31,10 @@ dependencies:
         centos: 6
         fedora: 33
         redhat: 6
+
+  - role: amtega.packages
+    vars:
+      packages_os:
+        all:
+          all:
+            util-linux: present
