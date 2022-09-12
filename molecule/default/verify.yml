@@ -5,12 +5,12 @@
   gather_facts: no
   tasks:
     - name: Read /etc/pam.d/su file
-      command: cat /etc/pam.d/su
+      ansible.builtin.command: cat /etc/pam.d/su
       changed_when: no
       register: read_pamd_su_result
 
     - name: Check that PAM wheel group control flag is configured
-      assert:
+      ansible.builtin.assert:
         that: >-
           read_pamd_su_result.stdout_lines
           | select("search", "^auth.*{{ su_pamd_wheel }}.*pam_wheel.*")
