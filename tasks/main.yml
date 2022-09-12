@@ -1,15 +1,15 @@
 ---
-# Role tasks
 
-- block:
+- name: Setup su
+  block:
     - name: Check that PAM wheel group flag is valid
-      assert:
+      ansible.builtin.assert:
         that: su_pamd_wheel in ["required","sufficient"]
         fail_msg: >-
           PAM wheel group control flag must be `required` or `sufficient`
 
     - name: Setup PAM wheel group control flag
-      replace:
+      ansible.builtin.replace:
         path: "{{ su_pamd_config_file }}"
         regexp: '^#(auth[\s\t]*{{ su_pamd_wheel }}[\s\t]*pam_wheel.*)'
         replace: '\1'
